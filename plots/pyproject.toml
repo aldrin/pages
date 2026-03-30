@@ -1,0 +1,26 @@
+[project]
+name = "plots"
+version = "0.1.0"
+description = "Visualizations and site index for the writing system"
+requires-python = ">=3.14"
+dependencies = [
+    "matplotlib>=3.10.8",
+    "plotnine>=0.15.3",
+]
+
+[dependency-groups]
+dev = [
+    "ruff>=0.12.2",
+]
+
+[tool.ruff]
+line-length = 99
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "W"]
+
+[tool.ruff.lint.isort]
+known-first-party = ["ajd"]
+
+[tool.pyright]
+pythonVersion = "3.14"

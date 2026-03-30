@@ -1,0 +1,100 @@
+#+publish: true
+#+date: 2026-03-29
+#+description: A personal Org-to-PDF writing system built on pandoc and typst.
+
+* My Writing System
+
+I write in Emacs [[https://orgmode.org][org-mode]] and render documents to PDF for readers. This folder contains my
+writing system, built on [[https://pandoc.org][pandoc]] and [[https://typst.app][typst]]. I use macOS but this should work on Linux with
+minor tweaks.
+
+Run =./setup.sh= to install all dependencies (pandoc, typst, uv, IBM Plex fonts). Then
+write. When you are done, run =make= with your filename (or use =M-x compile= in Emacs) to produce
+a PDF. Put visuals in =images/= and reference them in your Org content.
+
+#+name: fig-pipeline
+#+caption: The rendering pipeline from Org source to PDF output.
+[[./images/pipeline.svg]]
+
+The Makefile finds the matching =.org= file, runs pandoc with the Lua filter (=ajd.lua=) and Typst
+template (=style/ajd.typ=), writes intermediate Typst to =.cache/=, and compiles the PDF into
+=docs/=. It declares both as dependencies, so changes to either trigger a rebuild. You can
+adjust typography and rendering choices by editing the template in =style/=.
+
+The author defaults to yours truly and the date defaults to the build date. Override either in the
+Org file header with =#+author:= or =#+date:=. The title appears in a running header on every page
+alongside the page number. The Lua filter rewrites image paths from relative to absolute so Typst
+can locate them regardless of build directory.
+
+** Formatting
+
+Text can be *bold*, /italic/, _underlined_, +struck through+, or =inline code=. Links render in
+color, like [[https://www.poetryfoundation.org/poems/46271/i-am-a-parcel-of-vain-strivings-tied][this one]]. Block quotes look like the following:
+
+#+begin_quote
+I am a parcel of vain strivings tied by a chance bond together.
+
+-- Henry David Thoreau
+#+end_quote
+
+Tables follow the booktabs convention with horizontal rules and no vertical lines:
+
+#+name: tbl-taxi
+#+caption: NYC Taxi Trip Metrics by Borough (2024 Q1)
+| Borough       | Trips   | Avg Fare | Avg Distance | Avg Duration | Tip Rate |
+|---------------+---------+----------+--------------+--------------+----------|
+| Manhattan     | 312,847 | $14.20   | 2.3 mi       | 14.8 min     | 22.1%    |
+| Brooklyn      | 87,214  | $18.50   | 3.7 mi       | 22.3 min     | 18.4%    |
+| Queens        | 64,932  | $32.70   | 10.2 mi      | 34.1 min     | 16.9%    |
+| Bronx         | 12,481  | $22.40   | 5.1 mi       | 24.7 min     | 14.2%    |
+| Staten Island | 1,847   | $28.90   | 7.8 mi       | 28.5 min     | 12.8%    |
+| JFK Airport   | 43,298  | $52.00   | 17.4 mi      | 42.6 min     | 19.7%    |
+| LaGuardia     | 28,716  | $34.10   | 8.9 mi       | 26.3 min     | 20.3%    |
+
+The =plots/= visualization scripts render the same data in the grayscale broadsheet style.
+
+#+begin_twocol
+#+name: fig-taxi-trips
+#+caption: Trip volume by borough.
+[[./images/taxi-trips.svg]]
+-----
+#+name: fig-taxi-heatmap
+#+caption: Trip volume by borough and time of day.
+[[./images/heatmap.svg]]
+#+end_twocol
+
+Cross-reference a table or figure by adding =#+name: label= above it and writing =[[#label]]= in
+your text. Numbers update automatically: [[#tbl-taxi]], [[#fig-taxi-trips]], [[#fig-taxi-heatmap]].
+
+*** More features
+
+Third level headings like this one are run-in headings. They flow into the paragraph text and are
+useful for minor divisions without adding vertical space. The template also supports two-column
+layouts, aside blocks, and code with syntax highlighting.
+
+#+begin_twocol
+Two-column layouts use =#+begin_twocol= blocks. A horizontal rule (=-----=) marks the column break.
+This side can contain narrative text or context that pairs with the content on the right.
+-----
+
+#+begin_aside
+Asides provide tangential context. They are visually quieter than callouts and work well for
+background information that does not belong in the main text.
+#+end_aside
+
+#+end_twocol
+
+#+begin_src python
+def fibonacci(n):
+    a, b = 0, 1
+    for _ in range(n):
+        yield a
+        a, b = b, a + b
+#+end_src
+
+Footnotes render at the bottom of the page with a short separator rule [fn:1].
+
+* Footnotes
+
+[fn:1] Footnotes work well for citations, asides, and tangential details that would interrupt the
+main narrative.

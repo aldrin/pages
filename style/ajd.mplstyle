@@ -1,0 +1,79 @@
+# ajd.mplstyle -- Broadsheet grayscale style for the ajd writing system.
+#
+# Typography: IBM Plex Serif (body), IBM Plex Sans (titles), IBM Plex Mono (code).
+# Palette: grayscale. Newspaper-influenced: horizontal rules, heavy baseline.
+# Geometry: figures sized for US Letter content width (176mm).
+
+# -- Typography ---------------------------------------------------------------
+font.family:      serif
+font.serif:       IBM Plex Serif
+font.sans-serif:  IBM Plex Sans
+font.monospace:   IBM Plex Mono
+font.size:        10
+text.color:       333333
+
+# -- Figure -------------------------------------------------------------------
+figure.figsize:    6.93, 4.28
+figure.dpi:        150
+figure.facecolor:  none
+figure.edgecolor:  none
+savefig.dpi:       300
+savefig.bbox:      tight
+savefig.pad_inches: 0.05
+savefig.transparent: true
+
+# -- Axes ---------------------------------------------------------------------
+axes.facecolor:    none
+axes.edgecolor:    222222
+axes.linewidth:    0.8
+axes.titlesize:    12
+axes.titleweight:  bold
+axes.titlepad:     10
+axes.labelsize:    9
+axes.labelcolor:   444444
+axes.labelpad:     6
+axes.spines.top:   false
+axes.spines.right: false
+axes.spines.left:  false
+axes.prop_cycle:   cycler('color', ['444444', '888888', 'BBBBBB', '666666', 'AAAAAA', '333333'])
+axes.axisbelow:    true
+
+# -- Grid ---------------------------------------------------------------------
+axes.grid:         true
+axes.grid.axis:    y
+grid.color:        CCCCCC
+grid.linewidth:    0.4
+grid.linestyle:    -
+
+# -- Ticks --------------------------------------------------------------------
+xtick.labelsize:   8.5
+ytick.labelsize:   8.5
+xtick.major.width: 0.5
+ytick.major.width: 0.0
+xtick.minor.width: 0.3
+ytick.minor.width: 0.0
+xtick.major.size:  3
+ytick.major.size:  0
+xtick.color:       222222
+ytick.color:       222222
+xtick.labelcolor:  666666
+ytick.labelcolor:  666666
+xtick.direction:   out
+ytick.direction:   out
+
+# -- Legend -------------------------------------------------------------------
+legend.fontsize:       8.5
+legend.frameon:        false
+legend.title_fontsize: 9
+
+# -- Lines and markers --------------------------------------------------------
+lines.linewidth:   1.8
+lines.markersize:  5
+lines.markeredgewidth: 0
+
+# -- Patches (bars, pie slices) -----------------------------------------------
+patch.linewidth: 0
+patch.edgecolor: white
+
+# -- Hatching -----------------------------------------------------------------
+hatch.linewidth: 0.5

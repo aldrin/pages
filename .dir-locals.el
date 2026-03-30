@@ -1,5 +1,4 @@
 ((org-mode
   . ((eval . (setq-local compile-command
-                         (concat "make "
-                                 (file-name-base buffer-file-name)
-                                 ".pdf"))))))
+                         (let ((base (file-name-base buffer-file-name)))
+                           (concat "make " base ".pdf " base ".html")))))))

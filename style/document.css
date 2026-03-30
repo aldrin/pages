@@ -1,0 +1,334 @@
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+
+/* -- Layout --------------------------------------------------------------- */
+/* Pandoc standalone puts all content directly in <body>. We use body as
+   the centered column container, matching the Typst template geometry. */
+
+body {
+  font-family: "IBM Plex Serif", serif;
+  font-size: 16px;
+  line-height: 1.65;
+  color: #333;
+  background: #faf9f7;
+  max-width: 38em;
+  margin: 0 auto;
+  padding: 3em 1.5em 5em;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* -- Home link ------------------------------------------------------------ */
+
+nav.home {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  margin-bottom: 2em;
+}
+
+nav.home a {
+  color: #888;
+  text-decoration: none;
+}
+
+nav.home a:hover {
+  color: #4682B4;
+}
+
+/* -- Title block ---------------------------------------------------------- */
+
+header#title-block-header {
+  margin-bottom: 2em;
+}
+
+header#title-block-header h1.title {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 26px;
+  font-weight: 600;
+  line-height: 1.2;
+  color: #222;
+  margin: 0 0 0.4em;
+}
+
+header#title-block-header .author,
+header#title-block-header .date {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  color: #888;
+}
+
+header#title-block-header .author:empty,
+header#title-block-header .date:empty {
+  display: none;
+}
+
+/* -- Headings ------------------------------------------------------------- */
+
+h1, h2, h3, h4 {
+  font-family: "IBM Plex Sans", sans-serif;
+  color: #222;
+}
+
+h1 {
+  font-size: 19px;
+  font-weight: 500;
+  margin: 1.8em 0 0.5em;
+}
+
+h2 {
+  font-size: 16px;
+  font-weight: 500;
+  margin: 1.4em 0 0.4em;
+}
+
+/* Run-in heading: flows into the paragraph */
+h3 {
+  font-size: 16px;
+  font-weight: 500;
+  display: inline;
+  margin: 0;
+}
+
+h3::after {
+  content: ".\00a0\00a0";
+}
+
+h3 + p {
+  display: inline;
+}
+
+h3 + p + * {
+  margin-top: 1.2em;
+}
+
+/* -- Body text ------------------------------------------------------------ */
+
+p {
+  margin: 0 0 1em;
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* -- Links ---------------------------------------------------------------- */
+
+a {
+  color: #4682B4;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/* -- Block quotes --------------------------------------------------------- */
+
+blockquote {
+  margin: 1.2em 0;
+  padding: 0.5em 1em;
+  border-left: 2.5px solid #89add6;
+  color: #555;
+  font-style: italic;
+}
+
+blockquote p {
+  text-align: left;
+}
+
+/* -- Code ----------------------------------------------------------------- */
+
+code {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 0.875em;
+}
+
+pre {
+  font-family: "IBM Plex Mono", monospace;
+  font-size: 13px;
+  line-height: 1.5;
+  background: #f0f0f0;
+  border-radius: 2px;
+  padding: 0.6em 0.8em;
+  margin: 1.2em 0;
+  overflow-x: auto;
+}
+
+div.sourceCode {
+  margin: 1.2em 0;
+}
+
+div.sourceCode pre {
+  margin: 0;
+}
+
+p > code, li > code, td > code {
+  background: #f0f0f0;
+  padding: 0.1em 0.3em;
+  border-radius: 2px;
+}
+
+/* -- Tables --------------------------------------------------------------- */
+
+table {
+  border-collapse: collapse;
+  margin: 1.2em 0;
+  font-size: 15px;
+  width: 100%;
+}
+
+thead {
+  border-bottom: 1.5px solid #bbb;
+}
+
+thead th {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  font-weight: 500;
+  padding: 6px 10px;
+  text-align: left;
+}
+
+tbody td {
+  padding: 5px 10px;
+}
+
+tbody tr:last-child {
+  border-bottom: 1px solid #ddd;
+}
+
+caption {
+  font-size: 14px;
+  font-style: italic;
+  color: #777;
+  caption-side: bottom;
+  padding-top: 0.4em;
+}
+
+/* -- Figures -------------------------------------------------------------- */
+
+figure {
+  margin: 1.5em 0;
+  text-align: center;
+}
+
+figure img,
+figure svg {
+  max-width: 100%;
+  height: auto;
+}
+
+figcaption {
+  font-size: 14px;
+  font-style: italic;
+  color: #777;
+  margin-top: 0.4em;
+}
+
+/* -- Footnotes ------------------------------------------------------------ */
+
+section.footnotes {
+  margin-top: 2em;
+  padding-top: 1em;
+  border-top: 1px solid #ddd;
+  font-size: 14px;
+  color: #555;
+}
+
+section.footnotes hr {
+  display: none;
+}
+
+section.footnotes ol {
+  padding-left: 1.5em;
+}
+
+/* -- Lists ---------------------------------------------------------------- */
+
+ul, ol {
+  margin: 0.6em 0;
+  padding-left: 1.5em;
+}
+
+li {
+  margin-bottom: 0.3em;
+}
+
+/* -- Custom blocks -------------------------------------------------------- */
+
+div.aside {
+  background: #f0f0f0;
+  border-radius: 2px;
+  padding: 0.8em 1em;
+  margin: 1.2em 0;
+  font-size: 15px;
+  color: #555;
+}
+
+div.callout {
+  padding: 0.8em 1em;
+  margin: 1.2em 0;
+  border-radius: 0 2px 2px 0;
+}
+
+div.callout .callout-label {
+  display: block;
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  margin-bottom: 0.3em;
+}
+
+div.callout.note {
+  border-left: 2.5px solid #4682B4;
+  background: #f2f6fb;
+}
+div.callout.note .callout-label { color: #4682B4; }
+
+div.callout.tip {
+  border-left: 2.5px solid #2d8a4e;
+  background: #f0f8f3;
+}
+div.callout.tip .callout-label { color: #2d8a4e; }
+
+div.callout.warning {
+  border-left: 2.5px solid #d4942a;
+  background: #fdf6ec;
+}
+div.callout.warning .callout-label { color: #d4942a; }
+
+div.callout.important {
+  border-left: 2.5px solid #c44040;
+  background: #fdf0f0;
+}
+div.callout.important .callout-label { color: #c44040; }
+
+div.key {
+  background: #f0f5fa;
+  border: 1px solid #b8cfe0;
+  border-radius: 2px;
+  padding: 0.8em 1em;
+  margin: 1.2em 0;
+}
+
+div.twocol {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5em;
+  margin: 1.2em 0;
+}
+
+div.twocol > div.col {
+  min-width: 0;
+}
+
+/* -- Responsive ----------------------------------------------------------- */
+
+@media (max-width: 480px) {
+  body {
+    padding: 1.5em 1em 3em;
+    font-size: 15px;
+  }
+
+  div.twocol {
+    grid-template-columns: 1fr;
+  }
+}

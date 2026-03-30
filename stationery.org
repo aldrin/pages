@@ -1,30 +1,32 @@
 #+publish: true
 #+date: 2026-03-29
-#+description: A personal Org-to-PDF writing system built on pandoc and typst.
+#+description: A personal Org writing system that produces PDF and HTML from the same source.
 
 * My Writing System
 
-I write in Emacs [[https://orgmode.org][org-mode]] and render documents to PDF for readers. This folder contains my
-writing system, built on [[https://pandoc.org][pandoc]] and [[https://typst.app][typst]]. I use macOS but this should work on Linux with
-minor tweaks.
+I write in Emacs [[https://orgmode.org][org-mode]] and publish documents as both PDF and HTML. This repository contains
+my writing system, built on [[https://pandoc.org][pandoc]] and [[https://typst.app][typst]]. I use macOS but this should work on Linux
+with minor tweaks.
 
 Run =./setup.sh= to install all dependencies (pandoc, typst, uv, IBM Plex fonts). Then
 write. When you are done, run =make= with your filename (or use =M-x compile= in Emacs) to produce
-a PDF. Put visuals in =images/= and reference them in your Org content.
+both outputs. Put visuals in =images/= and reference them in your Org content.
 
 #+name: fig-pipeline
 #+caption: The rendering pipeline from Org source to PDF output.
 [[./images/pipeline.svg]]
 
-The Makefile finds the matching =.org= file, runs pandoc with the Lua filter (=ajd.lua=) and Typst
-template (=style/ajd.typ=), writes intermediate Typst to =.cache/=, and compiles the PDF into
-=docs/=. It declares both as dependencies, so changes to either trigger a rebuild. You can
-adjust typography and rendering choices by editing the template in =style/=.
+The Makefile drives two parallel pipelines from each =.org= file. For PDF, pandoc converts the Org
+source to Typst markup via the Lua filter (=ajd.lua=) and template (=style/ajd.typ=), writes
+intermediate Typst to =.cache/=, and compiles the PDF into =docs/=. For HTML, pandoc converts the
+same source directly to a standalone HTML page styled by =style/document.css=. SVG images are
+inlined into the HTML so each page is self-contained. Run =make site= to build every =.org= file
+in the directory.
 
 The author defaults to yours truly and the date defaults to the build date. Override either in the
-Org file header with =#+author:= or =#+date:=. The title appears in a running header on every page
-alongside the page number. The Lua filter rewrites image paths from relative to absolute so Typst
-can locate them regardless of build directory.
+Org file header with =#+author:= or =#+date:=. Setting either to blank suppresses it in the HTML
+output. The Lua filter rewrites image paths per format: root-relative for Typst, inlined SVGs for
+HTML.
 
 ** Formatting
 

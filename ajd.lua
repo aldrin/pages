@@ -1,21 +1,52 @@
--- ajd.lua -- Pandoc Lua filter for Org-to-Typst pipeline
+-- ajd.lua -- Pandoc Lua filter for the Org writing system
 --
--- 1. Promotes the first h1 to document title when #+title is absent
--- 2. Shifts remaining headings up one level to compensate
--- 3. Strips the empty "Footnotes" heading Org generates
--- 4. Sets default author and date (today)
--- 5. Converts internal links to Typst @label cross-references
--- 6. Rewrites image paths to root-relative for typst --root
--- 7. Converts special blocks (aside/callout/key/twocol) to Typst
+-- 1. Sets default author and date metadata (blank values suppress them)
+-- 2. Promotes the first h1 to document title when #+title is absent
+-- 3. Shifts remaining headings up one level to compensate
+-- 4. Strips the empty "Footnotes" heading Org generates
+-- 5. Converts [[#label]] links to Typst @label cross-references
+-- 6. Rewrites image paths: root-relative for Typst, inlines SVGs for HTML
+-- 7. Passes explicit figure widths through to Typst
+-- 8. Converts special blocks (aside, callout, key, twocol) per format
+-- 9. Injects Typst imports for custom blocks that were used
 
 local title_from_heading = false
+local imports = {}
 
--- Document-level transforms: metadata defaults, title promotion, heading cleanup
+-- Map block class to Typst function name
+local typst_blocks = {
+  aside     = "aside",
+  key       = "key-point",
+  note      = "callout",
+  tip       = "callout",
+  warning   = "callout",
+  important = "callout",
+}
+
+local function typst(blocks)
+  return pandoc.write(pandoc.Pandoc(blocks), "typst")
+end
+
+local function html(blocks)
+  return pandoc.write(pandoc.Pandoc(blocks), "html")
+end
+
+local function empty(meta_value)
+  return meta_value and pandoc.utils.stringify(meta_value) == ""
+end
+
 function Pandoc(doc)
-  if not doc.meta.author or #doc.meta.author == 0 then
+  if not doc.meta.lang then
+    doc.meta.lang = pandoc.MetaInlines{pandoc.Str("en")}
+  end
+  if empty(doc.meta.author) then
+    doc.meta.author = nil
+  elseif not doc.meta.author then
     doc.meta.author = {pandoc.MetaInlines{pandoc.Str("Aldrin D'Souza")}}
   end
-  if not doc.meta.date then
+  if empty(doc.meta.date) then
+    doc.meta.date = nil
+  elseif not doc.meta.date then
     doc.meta.date = pandoc.MetaInlines{pandoc.Str(os.date("%Y-%m-%d"))}
   end
 
@@ -43,12 +74,20 @@ function Pandoc(doc)
     blocks:insert(el)
     ::continue::
   end
-
   doc.blocks = blocks
+
+  if FORMAT ~= "typst" then
+    local src = PANDOC_STATE.input_files[1] or ""
+    if not src:match("index%.org$") then
+      doc.meta["include-before"] = pandoc.MetaBlocks{
+        pandoc.RawBlock("html", '<nav class="home"><a href="index.html">\u{2190} Home</a></nav>')
+      }
+    end
+  end
+
   return doc
 end
 
--- Convert [[#label]] to Typst @label cross-references
 function Link(link)
   if FORMAT ~= "typst" then return nil end
   if link.target:match("^#") then
@@ -56,15 +95,25 @@ function Link(link)
   end
 end
 
--- Rewrite relative image paths to root-relative for typst --root
 function Image(img)
-  if not pandoc.path.is_absolute(img.src) then
+  if pandoc.path.is_absolute(img.src) then return img end
+  if FORMAT == "typst" then
     img.src = "/" .. img.src
+    return img
   end
+  local path = img.src:gsub("^%./", "")
+  if path:match("%.svg$") then
+    local f = io.open(path, "r")
+    if f then
+      local svg = f:read("*a")
+      f:close()
+      return pandoc.RawInline("html", svg:gsub("^<%?xml[^>]*>%s*", ""))
+    end
+  end
+  img.src = path
   return img
 end
 
--- Pass image width through to Figure's Typst output
 function Figure(fig)
   if FORMAT ~= "typst" then return nil end
   local w = fig.attributes and fig.attributes.width
@@ -80,69 +129,60 @@ function Figure(fig)
   end
 end
 
--- Special block conversion
-local imports = {}
-local callout_kinds = { note = true, tip = true, warning = true, important = true }
-
-local function render(blocks)
-  return pandoc.write(pandoc.Pandoc(blocks), "typst")
-end
-
 function Div(div)
-  if FORMAT ~= "typst" then return nil end
+  local cls = div.classes[1]
+  if not cls then return nil end
 
-  for _, cls in ipairs(div.classes) do
-    if callout_kinds[cls] then
-      imports.callout = true
-      return pandoc.RawBlock("typst",
-        '#callout(kind: "' .. cls .. '")[' .. render(div.content) .. ']')
+  if cls == "twocol" then
+    local left, right = pandoc.List(), pandoc.List()
+    local target = left
+    for _, bl in ipairs(div.content) do
+      if bl.t == "HorizontalRule" then target = right
+      else target:insert(bl) end
     end
-
-    if cls == "aside" then
-      imports.aside = true
-      return pandoc.RawBlock("typst",
-        "#aside[" .. render(div.content) .. "]")
-    end
-
-    if cls == "key" then
-      imports["key-point"] = true
-      return pandoc.RawBlock("typst",
-        "#key-point[" .. render(div.content) .. "]")
-    end
-
-    if cls == "twocol" then
+    if FORMAT == "typst" then
       imports.twocol = true
-      local left, right = pandoc.List(), pandoc.List()
-      local target = left
-      for _, bl in ipairs(div.content) do
-        if bl.t == "HorizontalRule" then
-          target = right
-        else
-          target:insert(bl)
-        end
-      end
       return pandoc.RawBlock("typst",
-        "#twocol[" .. render(left) .. "#colbreak()" .. render(right) .. "]")
+        "#twocol[" .. typst(left) .. "#colbreak()" .. typst(right) .. "]")
     end
+    return pandoc.RawBlock("html",
+      '<div class="twocol"><div class="col">' .. html(left)
+      .. '</div><div class="col">' .. html(right) .. '</div></div>')
+  end
+
+  local block_name = typst_blocks[cls]
+  if not block_name then return nil end
+
+  if FORMAT == "typst" then
+    imports[block_name] = true
+    if block_name == "callout" then
+      return pandoc.RawBlock("typst",
+        '#callout(kind: "' .. cls .. '")[' .. typst(div.content) .. ']')
+    end
+    return pandoc.RawBlock("typst",
+      "#" .. block_name .. "[" .. typst(div.content) .. "]")
+  end
+
+  if block_name == "callout" then
+    return pandoc.RawBlock("html",
+      '<div class="callout ' .. cls .. '">'
+      .. '<span class="callout-label">' .. cls:sub(1,1):upper() .. cls:sub(2) .. '</span>'
+      .. html(div.content) .. '</div>')
   end
 end
 
--- Inject imports for custom blocks that were actually used
 function Meta(meta)
   if FORMAT ~= "typst" then return nil end
   local names = {}
-  for name in pairs(imports) do
-    names[#names + 1] = name
-  end
-  if #names > 0 then
-    table.sort(names)
-    local import = pandoc.RawBlock("typst",
-      '#import "/style/ajd.typ": ' .. table.concat(names, ", "))
-    if meta["header-includes"] then
-      meta["header-includes"]:insert(import)
-    else
-      meta["header-includes"] = pandoc.MetaBlocks({import})
-    end
+  for name in pairs(imports) do names[#names + 1] = name end
+  if #names == 0 then return nil end
+  table.sort(names)
+  local import = pandoc.RawBlock("typst",
+    '#import "/style/ajd.typ": ' .. table.concat(names, ", "))
+  if meta["header-includes"] then
+    meta["header-includes"]:insert(import)
+  else
+    meta["header-includes"] = pandoc.MetaBlocks({import})
   end
   return meta
 end

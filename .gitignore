@@ -3,3 +3,4 @@ __pycache__/
 plots/.venv/
 .cache/
 .DS_Store
+.claude-sandbox/

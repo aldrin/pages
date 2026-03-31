@@ -110,7 +110,7 @@
       set text(size: 7.5pt, fill: luma(160), font: sans)
       if date != none { date }
       h(1fr)
-      text(fill: luma(200), [Public])
+      text(fill: luma(200), [CC BY 4.0])
       h(1fr)
       counter(page).display("1 of 1", both: true)
     },

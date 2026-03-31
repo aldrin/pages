@@ -22,6 +22,7 @@ plots/*.py         -- individual visualization scripts
 diagrams/*.typ     -- Typst source for diagrams (compiled to SVG)
 images/*.svg       -- generated images consumed by documents
 docs/              -- published site: HTML pages, PDFs, document.css
+docs/fonts/        -- self-hosted IBM Plex WOFF2 files (latin subset)
 .cache/typst-build/ -- intermediate .typ files (gitignored)
 Makefile           -- orchestrates the full pipeline
 setup.sh           -- installs all dependencies via Homebrew and uv
@@ -90,19 +91,24 @@ The Typst template (`style/ajd.typ`) defines page geometry, font
 stacks, heading styles, and custom blocks. The HTML stylesheet
 (`style/document.css`) mirrors the same visual language for the web.
 
-The Lua filter (`ajd.lua`) adapts pandoc output for both formats:
+The Lua filter (`ajd.lua`) returns two filter passes. The first pass
+numbers figures and tables for HTML and rewrites cross-reference link
+text (e.g. `#tbl-taxi` becomes "Table 1"). The second pass handles
+format-specific conversion:
 
 1. Sets default `lang`, `author`, and `date` metadata
 2. Clears `author`/`date` when set to blank in the Org header
 3. Promotes the first h1 to document title when `#+title` is absent
 4. Shifts remaining headings up one level to compensate
 5. Strips the empty "Footnotes" heading that Org generates
-6. Injects a home link on all HTML pages except the index
-7. Converts `[[#label]]` links to Typst `@label` cross-references
-8. Rewrites image paths: root-relative for Typst, inlines SVGs for HTML
-9. Passes explicit figure widths through to Typst
-10. Converts special blocks (aside, callout, key, twocol) per format
-11. Injects Typst imports for custom blocks that were used
+6. Injects an "Other Pages" nav link on non-index HTML pages
+7. Appends a PDF link next to the date in the HTML title block
+8. Injects a CC BY 4.0 copyright footer on all HTML pages
+9. Converts `[[#label]]` links to Typst `@label` cross-references
+10. Rewrites image paths: root-relative for Typst, inlines SVGs for HTML
+11. Passes explicit figure widths through to Typst
+12. Converts special blocks (aside, callout, key, twocol) per format
+13. Injects Typst imports for custom blocks that were used
 
 Available custom blocks in Org source:
 
@@ -147,10 +153,13 @@ directly, and `docs/.nojekyll` for GitHub Pages. The files in `docs/`
 
 ## Site
 
-The `docs/` directory is served by GitHub Pages. The site index is
-`index.org`, a manually maintained Org file. To publish a new document,
-add a `file:` link to `index.org` and run `make site`. This builds
-HTML for every `.org` file in the repository root.
+The `docs/` directory is served by GitHub Pages at `aldrin.co`. The
+site index is `index.org`, a manually maintained Org file. To publish
+a new document, add a `file:` link to `index.org` and run `make site`.
+This builds HTML for every `.org` file in the repository root.
 
-HTML pages get a home link back to `index.html` automatically. The
-index page itself does not get this link.
+HTML pages get an "Other Pages" nav link and a PDF link next to the
+date. The index page gets neither. Fonts are self-hosted as WOFF2
+files in `docs/fonts/` (no Google Fonts dependency). The stylesheet
+includes dark mode via `prefers-color-scheme` and print styles. The
+PDF footer shows "CC BY 4.0" in the center.

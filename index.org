@@ -5,6 +5,6 @@
 Hello, I'm [[https://github.com/aldrin][Aldrin]]. This is my website where I write about software, security, literature, music, and
 other topics I explore in my free time.
 
-- [[file:stationery.html][My Writing System]] ([[file:stationery.pdf][PDF]])
+- [[file:stationery.html][My Writing System]]
 
 All opinions and views expressed here are mine.

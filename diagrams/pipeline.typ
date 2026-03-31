@@ -30,7 +30,11 @@
   // Row 1: document pipeline
   node((0, 1), [#bold-label[.org] \ #sub[write here]], stroke: 0.8pt + luma(100)),
   edge((0, 1), (1, 1), "-|>"),
-  node((1, 1), [#label[make] \ #sub[pandoc + typst]], fill: luma(250), stroke: 0.7pt + luma(150)),
+  node((1, 1), [#label[make] \ #sub[pandoc + ajd.lua]], fill: luma(250), stroke: 0.7pt + luma(150)),
   edge((1, 1), (2, 1), "-|>"),
   node((2, 1), [#bold-label[.pdf] \ #sub[docs/]], stroke: 0.8pt + luma(100)),
+
+  // Row 2: HTML output
+  edge((1, 1), (2, 2), "-|>"),
+  node((2, 2), [#bold-label[.html] \ #sub[docs/]], stroke: 0.8pt + luma(100)),
 )

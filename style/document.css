@@ -1,8 +1,55 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Serif:ital,wght@0,400;0,500;1,400&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap");
+/* -- Fonts (IBM Plex, SIL OFL) -------------------------------------------- */
+
+@font-face {
+  font-family: "IBM Plex Serif";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/plex-serif-400.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Serif";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/plex-serif-500.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/plex-serif-400i.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Sans";
+  font-style: normal;
+  font-weight: 400 600;
+  font-display: swap;
+  src: url(fonts/plex-sans.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url(fonts/plex-mono-400.woff2) format("woff2");
+}
+@font-face {
+  font-family: "IBM Plex Mono";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url(fonts/plex-mono-500.woff2) format("woff2");
+}
 
 /* -- Layout --------------------------------------------------------------- */
 /* Pandoc standalone puts all content directly in <body>. We use body as
    the centered column container, matching the Typst template geometry. */
+
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   font-family: "IBM Plex Serif", serif;
@@ -14,6 +61,7 @@ body {
   margin: 0 auto;
   padding: 3em 1.5em 5em;
   -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 /* -- Home link ------------------------------------------------------------ */
@@ -53,6 +101,21 @@ header#title-block-header .date {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;
   color: #888;
+  display: inline;
+  margin: 0;
+}
+
+header#title-block-header .author::after {
+  content: " \00b7 ";
+}
+
+header#title-block-header .date a {
+  color: #888;
+  text-decoration: none;
+}
+
+header#title-block-header .date a:hover {
+  color: #4682B4;
 }
 
 header#title-block-header .author:empty,
@@ -112,6 +175,7 @@ p {
 a {
   color: #4682B4;
   text-decoration: none;
+  transition: color 0.15s;
 }
 
 a:hover {
@@ -130,6 +194,10 @@ blockquote {
 
 blockquote p {
   text-align: left;
+}
+
+blockquote p:last-child {
+  margin-bottom: 0;
 }
 
 /* -- Code ----------------------------------------------------------------- */
@@ -320,6 +388,27 @@ div.twocol > div.col {
   min-width: 0;
 }
 
+/* -- Footer --------------------------------------------------------------- */
+
+footer {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  color: #aaa;
+  text-align: center;
+  margin-top: 4em;
+  padding-top: 1em;
+  border-top: 1px solid #e0e0e0;
+}
+
+footer a {
+  color: #aaa;
+  text-decoration: none;
+}
+
+footer a:hover {
+  color: #4682B4;
+}
+
 /* -- Responsive ----------------------------------------------------------- */
 
 @media (max-width: 480px) {
@@ -330,5 +419,143 @@ div.twocol > div.col {
 
   div.twocol {
     grid-template-columns: 1fr;
+  }
+}
+
+/* -- Dark mode ------------------------------------------------------------ */
+
+@media (prefers-color-scheme: dark) {
+  body {
+    color: #d4d4d4;
+    background: #1a1a1a;
+  }
+
+  h1, h2, h3, h4,
+  header#title-block-header h1.title {
+    color: #e0e0e0;
+  }
+
+  nav.home a,
+  header#title-block-header .author,
+  header#title-block-header .date,
+  header#title-block-header .date a {
+    color: #888;
+  }
+
+  a {
+    color: #7aadcf;
+  }
+
+  nav.home a:hover,
+  header#title-block-header .date a:hover,
+  footer a:hover {
+    color: #7aadcf;
+  }
+
+  blockquote {
+    border-left-color: #5a8aad;
+    color: #aaa;
+  }
+
+  pre,
+  p > code, li > code, td > code,
+  div.aside {
+    background: #2a2a2a;
+  }
+
+  div.aside {
+    color: #aaa;
+  }
+
+  div.callout.note {
+    border-left-color: #5a8aad;
+    background: #1c2630;
+  }
+  div.callout.note .callout-label { color: #7aadcf; }
+
+  div.callout.tip {
+    border-left-color: #3a9a5e;
+    background: #1c2a20;
+  }
+  div.callout.tip .callout-label { color: #4db870; }
+
+  div.callout.warning {
+    border-left-color: #c4943a;
+    background: #2a2418;
+  }
+  div.callout.warning .callout-label { color: #d4a44a; }
+
+  div.callout.important {
+    border-left-color: #c45050;
+    background: #2a1c1c;
+  }
+  div.callout.important .callout-label { color: #d46060; }
+
+  div.key {
+    background: #1c2430;
+    border-color: #3a5a70;
+  }
+
+  table {
+    color: #d4d4d4;
+  }
+
+  thead {
+    border-bottom-color: #555;
+  }
+
+  tbody tr:last-child {
+    border-bottom-color: #444;
+  }
+
+  caption,
+  figcaption {
+    color: #888;
+  }
+
+  section.footnotes {
+    border-top-color: #444;
+    color: #aaa;
+  }
+
+  footer {
+    border-top-color: #333;
+    color: #666;
+  }
+
+  footer a {
+    color: #666;
+  }
+
+  figure svg {
+    background: #faf9f7;
+    border-radius: 4px;
+    padding: 0.5em;
+  }
+}
+
+/* -- Print ---------------------------------------------------------------- */
+
+@media print {
+  body {
+    background: white;
+    color: black;
+    padding: 0;
+    max-width: none;
+  }
+
+  nav.home,
+  footer {
+    display: none;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: underline;
+  }
+
+  pre {
+    border: 1px solid #ddd;
+    background: none;
   }
 }

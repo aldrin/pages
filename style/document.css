@@ -388,6 +388,15 @@ div.twocol > div.col {
   min-width: 0;
 }
 
+/* -- Page dates (index) --------------------------------------------------- */
+
+.page-date {
+  font-family: "IBM Plex Sans", sans-serif;
+  font-size: 13px;
+  color: #aaa;
+  margin-left: 0.3em;
+}
+
 /* -- Footer --------------------------------------------------------------- */
 
 footer {
@@ -524,6 +533,10 @@ footer a:hover {
   }
 
   footer a {
+    color: #666;
+  }
+
+  .page-date {
     color: #666;
   }
 

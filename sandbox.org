@@ -19,7 +19,7 @@ reviewing anymore, you’re just clicking through.
 We cannot address /safe but tedious/ with =--dangerously-skip-permissions=. Agents are tenacious and
 even mild prodding can push them to seek unintended goals in [[https://ona.com/stories/how-claude-code-escapes-its-own-denylist-and-sandbox][creative ways]]. If they have access to
 sensitive data, can run arbitrary code, and can access remote endpoints, we have a problem. This page
-shares how I use Apple Containers and Claude Code sandbox to contain this [[https://simonwillison.net/2025/Jun/16/the-lethal-trifect/][lethal trifecta]] in my
+shares how I use Apple Containers and Claude Code sandbox to contain this [[https://simonwillison.net/2025/Jun/16/the-lethal-trifecta/][lethal trifecta]] in my
 weekend projects.
 
 ** My Claude Sandbox

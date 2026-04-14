@@ -155,7 +155,8 @@ local conversion = {
         end
       end
       doc.meta["include-after"] = pandoc.MetaBlocks{
-        pandoc.RawBlock("html", '<footer>\u{a9} 2026 Aldrin D\u{2019}Souza. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</footer>')
+        pandoc.RawBlock("html", '<footer>\u{a9} 2026 Aldrin D\u{2019}Souza. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</footer>'),
+        pandoc.RawBlock("html", '<script data-goatcounter="https://a1drin.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>')
       }
     end
 

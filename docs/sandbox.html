@@ -108,23 +108,26 @@ href="https://ona.com/stories/how-claude-code-escapes-its-own-denylist-and-sandb
 ways</a>. If they have access to sensitive data, can run arbitrary code,
 and can access remote endpoints, we have a problem. I am not cool enough
 for <code class="verbatim">--dangerously-skip-permissions</code> yet so
-I built a sandbox that balances between annoying prompts from those
-where I want the agent to wait and confirm.</p>
+I built a sandbox that filters the annoying permission prompts.</p>
 <h1 id="setup">Setup</h1>
-<p>There are many ways to do this. You can isolate your agent with <a
-href="https://nono.sh">kernel-backed</a> solutions like <a
-href="https://landlock.io">landlock</a>, <a
-href="https://github.com/containers/bubblewrap">bubblewrap</a>, <a
-href="https://theapplewiki.com/wiki/Dev:Seatbelt">seatbelt</a> and skip
-all permissions. Or, you can side step all the <a
-href="https://nono.sh/docs/cli/clients/claude-code">capability
-management</a> and run your agent in a virtual machine isolated from all
-that matters to you. Or you can, like I did, mix things up to fit your
-personal workflow.</p>
-<p>If you are on a recent Mac (Apple Silicon, macOS Tahoe) with the <a
+<p>There are many ways to do this. You can isolate your agent with
+kernel backed solutions like <a href="https://landlock.io">landlock</a>,
+<a href="https://github.com/containers/bubblewrap">bubblewrap</a>, or <a
+href="https://theapplewiki.com/wiki/Dev:Seatbelt">seatbelt</a>. That
+works well but requires a bunch of <em>can do this, can't do that</em>
+<a href="https://nono.sh/docs/cli/clients/claude-code">profile</a>
+management. You can skip all that by running the tool in a virtual
+machine isolated from your sensitive data. Or you can, like I do, use
+both. Particularly, on the latest macOS, where you can use Apple's
+recent <a
+href="https://developer.apple.com/documentation/virtualization">virtualization</a>
+framework, the combination gives a neat workflow.</p>
+<p>You need a recent Mac (Apple Silicon, macOS Tahoe) with the <a
 href="https://github.com/apple/container"><code
-class="verbatim">container</code></a> CLI installed, you can install it
-with Cargo:</p>
+class="verbatim">container</code></a> CLI installed. Once you have
+those, you can install my <a
+href="https://github.com/aldrin/claude-sandbox"><code
+class="verbatim">claude-sandbox</code></a> with Cargo:</p>
 <div class="sourceCode" id="cb1" data-org-language="sh"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> install <span class="at">--git</span> https://github.com/aldrin/claude-sandbox.git</span></code></pre></div>
 <p>The <a
@@ -864,12 +867,11 @@ mount, so changes appear on my host filesystem in real time. I keep my
 own editor and git workflow. When the session ends, the container goes
 away, but the work remains in my git workspace to review and
 publish.</p>
-<p>With the sandbox in place, most permission prompts disappear. I still
-see one when the agent wants to reach a new domain or do something
-unexpected. Those are the prompts I want to review, at least until I am
-cool enough for the <code
-class="verbatim">--dangerously-skip-permissions</code> world we're
-heading towards.</p>
+<p>With this workflow, most permission prompts disappear. I still see
+some when the agent wants to do things like reach out to a new domain. I
+don't mind those because their the agent is typically doing things I do
+want to review. At least until I am cool enough for <code
+class="verbatim">--dangerously-skip-permissions</code>.</p>
 <footer>© 2026 Aldrin D’Souza. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</footer>
 <script data-goatcounter="https://a1drin.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>

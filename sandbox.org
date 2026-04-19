@@ -18,17 +18,18 @@ reviewing anymore, you're just clicking through.
 Agents are tenacious and even mild prodding can push them to seek unintended goals in [[https://ona.com/stories/how-claude-code-escapes-its-own-denylist-and-sandbox][creative ways]].
 If they have access to sensitive data, can run arbitrary code, and can access remote endpoints, we
 have a problem. I am not cool enough for =--dangerously-skip-permissions= yet so I built a sandbox
-that balances between annoying prompts from those where I want the agent to wait and confirm.
+that filters the annoying permission prompts.
 
 ** Setup
 
-There are many ways to do this. You can isolate your agent with [[https://nono.sh][kernel-backed]] solutions like
-[[https://landlock.io][landlock]], [[https://github.com/containers/bubblewrap][bubblewrap]], [[https://theapplewiki.com/wiki/Dev:Seatbelt][seatbelt]] and skip all permissions. Or, you can side step all the [[https://nono.sh/docs/cli/clients/claude-code][capability
-management]] and run your agent in a virtual machine isolated from all that matters to you. Or you
-can, like I did, mix things up to fit your personal workflow.
+There are many ways to do this. You can isolate your agent with kernel backed solutions like
+[[https://landlock.io][landlock]], [[https://github.com/containers/bubblewrap][bubblewrap]], or [[https://theapplewiki.com/wiki/Dev:Seatbelt][seatbelt]]. That works well but requires a bunch of /can do this, can't do
+that/ [[https://nono.sh/docs/cli/clients/claude-code][profile]] management. You can skip all that by running the tool in a virtual machine isolated
+from your sensitive data. Or you can, like I do, use both. Particularly, on the latest macOS, where
+you can use Apple's recent [[https://developer.apple.com/documentation/virtualization][virtualization]] framework, the combination gives a neat workflow.
 
-If you are on a recent Mac (Apple Silicon, macOS Tahoe) with the [[https://github.com/apple/container][=container=]] CLI installed, you can
-install it with Cargo:
+You need a recent Mac (Apple Silicon, macOS Tahoe) with the [[https://github.com/apple/container][=container=]] CLI installed. Once you have
+those, you can install my [[https://github.com/aldrin/claude-sandbox][=claude-sandbox=]] with Cargo:
 
 #+begin_src sh
 cargo install --git https://github.com/aldrin/claude-sandbox.git
@@ -83,6 +84,6 @@ While the agent works in the sandbox, the project directory is a bind mount, so 
 host filesystem in real time. I keep my own editor and git workflow. When the session ends, the
 container goes away, but the work remains in my git workspace to review and publish.
 
-With the sandbox in place, most permission prompts disappear. I still see one when the agent wants
-to reach a new domain or do something unexpected. Those are the prompts I want to review, at least
-until I am cool enough for the =--dangerously-skip-permissions= world we're heading towards.
+With this workflow, most permission prompts disappear. I still see some when the agent wants to do
+things like reach out to a new domain. I don't mind those because their the agent is typically doing
+things I do want to review. At least until I am cool enough for =--dangerously-skip-permissions=.

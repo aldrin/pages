@@ -1,4 +1,4 @@
-#+title: Aldrin's Pages
+#+title: Aldrin’s Pages
 #+author:
 #+date:
 #+macro: date @@html:<span class="page-date">$1</span>@@
@@ -6,7 +6,7 @@
 Hello, I'm [[https://github.com/aldrin][Aldrin]]. Here, I write about software, security, literature, music, and other topics I
 explore in my free time.
 
-- [[file:sandbox.html][On Permission Fatigue]] {{{date(April 2026)}}}
+- [[file:sandbox.html][My Claude Code Sandbox]] {{{date(April 2026)}}}
 - [[file:stationery.html][My Writing System]] {{{date(March 2026)}}}
 
 All opinions expressed in these pages are mine alone. I put them here because I think they are

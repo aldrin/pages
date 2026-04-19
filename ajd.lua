@@ -12,6 +12,13 @@
 -- 10. Injects Typst imports for custom blocks that were used
 
 local title_from_heading = false
+
+local function format_date(iso)
+  local y, m, d = iso:match("^(%d%d%d%d)-(%d%d)-(%d%d)")
+  if not y then return iso end
+  local t = os.time({year=tonumber(y), month=tonumber(m), day=tonumber(d)})
+  return os.date("%b", t) .. " " .. tonumber(d) .. ", " .. y
+end
 local imports = {}
 local ref_labels = {}
 
@@ -142,14 +149,15 @@ local conversion = {
       local src = PANDOC_STATE.input_files[1] or ""
       if not src:match("index%.org$") then
         doc.meta["include-before"] = pandoc.MetaBlocks{
-          pandoc.RawBlock("html", '<nav class="home"><a href="index.html">\u{2190} Other Pages</a></nav>')
+          pandoc.RawBlock("html", '<nav class="home"><a href="index.html">Aldrin\u{2019}s Pages</a></nav>')
         }
         local pdf = src:match("([^/]+)%.org$")
         if pdf then
           local date = pandoc.utils.stringify(doc.meta.date or pandoc.MetaInlines{})
           local link = '<a href="' .. pdf .. '.pdf">PDF</a>'
+            .. ' &middot; <a href="https://github.com/aldrin/pages/blob/main/' .. pdf .. '.org">Source</a>'
           if date ~= "" then
-            link = date .. ' &middot; ' .. link
+            link = format_date(date) .. ' &middot; ' .. link
           end
           doc.meta.date = pandoc.MetaInlines{pandoc.RawInline("html", link)}
         end

@@ -101,8 +101,8 @@ format-specific conversion:
 3. Promotes the first h1 to document title when `#+title` is absent
 4. Shifts remaining headings up one level to compensate
 5. Strips the empty "Footnotes" heading that Org generates
-6. Injects an "Other Pages" nav link on non-index HTML pages
-7. Appends a PDF link next to the date in the HTML title block
+6. Injects a nav link back to the index on non-index HTML pages
+7. Appends PDF and Source links next to the date in the HTML title block
 8. Injects a CC BY 4.0 copyright footer on all HTML pages
 9. Converts `[[#label]]` links to Typst `@label` cross-references
 10. Rewrites image paths: root-relative for Typst, inlines SVGs for HTML
@@ -139,6 +139,27 @@ When writing a new plot script:
 Diagrams are standalone Typst files in `diagrams/` that compile to SVG
 via `make images/name.svg`.
 
+## AI Slop
+
+When writing or editing prose, avoid patterns common in AI-generated
+text. No dramatic fragments, negation pivots ("Not X, but Y"), pivot
+paragraphs ("But here's the thing..."), staccato bursts for effect,
+or rhetorical questions answered in the next sentence.
+
+Banned words and phrases:
+
+- crucial, robust, pivotal, unprecedented, nuanced, paradigm,
+  leverage, delve, tapestry, utilize, commence, facilitate, endeavor
+- importantly, ultimately, essentially, fundamentally
+- furthermore, moreover, additionally, however, that said
+- "serves as", "stands as", "it's worth noting", "broader
+  implications", "in an era of", "despite these challenges"
+
+No em dashes, bold-first bullets, or Unicode arrows. No
+throat-clearing, hedging stacks, sycophantic framing, or fractal
+summaries. Write plain, direct sentences. If a paragraph could appear
+in any blog post, rewrite it.
+
 ## Git
 
 Follow the seven rules for commit messages: separate subject from
@@ -158,8 +179,8 @@ site index is `index.org`, a manually maintained Org file. To publish
 a new document, add a `file:` link to `index.org` and run `make site`.
 This builds HTML for every `.org` file in the repository root.
 
-HTML pages get an "Other Pages" nav link and a PDF link next to the
-date. The index page gets neither. Fonts are self-hosted as WOFF2
+HTML pages get a nav link back to the index and PDF/Source links
+next to the date. The index page gets neither. Fonts are self-hosted as WOFF2
 files in `docs/fonts/` (no Google Fonts dependency). The stylesheet
 includes dark mode via `prefers-color-scheme` and print styles. The
 PDF footer shows "CC BY 4.0" in the center.

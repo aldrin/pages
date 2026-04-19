@@ -328,6 +328,7 @@ div.aside {
   font-size: 15px;
   color: #555;
 }
+div.aside > :last-child { margin-bottom: 0; }
 
 div.callout {
   padding: 0.8em 1em;
@@ -376,6 +377,7 @@ div.key {
   padding: 0.8em 1em;
   margin: 1.2em 0;
 }
+div.key > :last-child { margin-bottom: 0; }
 
 div.twocol {
   display: grid;

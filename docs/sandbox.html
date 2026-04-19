@@ -109,30 +109,29 @@ ways</a>. If they have access to sensitive data, can run arbitrary code,
 and can access remote endpoints, we have a problem. I am not cool enough
 for <code class="verbatim">--dangerously-skip-permissions</code> yet so
 I built a sandbox that filters the annoying permission prompts.</p>
-<h1 id="setup">Setup</h1>
 <p>There are many ways to do this. You can isolate your agent with
-kernel backed solutions like <a href="https://landlock.io">landlock</a>,
-<a href="https://github.com/containers/bubblewrap">bubblewrap</a>, or <a
+kernel isolation systems like <a
+href="https://landlock.io">landlock</a>, <a
+href="https://github.com/containers/bubblewrap">bubblewrap</a>, or <a
 href="https://theapplewiki.com/wiki/Dev:Seatbelt">seatbelt</a>. That
-works well but requires a bunch of <em>can do this, can't do that</em>
-<a href="https://nono.sh/docs/cli/clients/claude-code">profile</a>
-management. You can skip all that by running the tool in a virtual
-machine isolated from your sensitive data. Or you can, like I do, use
-both. Particularly, on the latest macOS, where you can use Apple's
-recent <a
-href="https://developer.apple.com/documentation/virtualization">virtualization</a>
-framework, the combination gives a neat workflow.</p>
-<p>You need a recent Mac (Apple Silicon, macOS Tahoe) with the <a
+works well but requires tool-specific <a
+href="https://nono.sh/docs/cli/clients/claude-code">profiles</a> where
+you have to list a bunch of <em>can do this, can't do that</em>. You can
+skip all that and shift your work to a cloud-based virtual machine
+isolated from your desktop. But then you end up with a beautiful,
+expensive, capable machine sitting on your desk as a paperweight.</p>
+<p>If you, like me, have a recent Apple Silicon machine with <a
 href="https://github.com/apple/container"><code
-class="verbatim">container</code></a> CLI installed. Once you have
-those, you can install my <a
+class="verbatim">container</code></a> CLI installed, you can use <a
 href="https://github.com/aldrin/claude-sandbox"><code
-class="verbatim">claude-sandbox</code></a> with Cargo:</p>
+class="verbatim">claude-sandbox</code></a> to blend these two
+approaches.</p>
 <div class="sourceCode" id="cb1" data-org-language="sh"><pre
 class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="ex">cargo</span> install <span class="at">--git</span> https://github.com/aldrin/claude-sandbox.git</span></code></pre></div>
-<p>The <a
+<p>The code and the <a
 href="https://github.com/aldrin/claude-sandbox/blob/main/README.md">README</a>
-has the details, but the workflow is straightforward.</p>
+have the details, but <a href="#fig-sandbox">Figure 1</a> has the basic
+workflow.</p>
 <figure id="fig-sandbox">
 <svg class="typst-doc" viewBox="0 0 263.9849999055118 84.29300018897636" width="263.9849999055118pt" height="84.29300018897636pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -477,22 +476,22 @@ configuration. Then I run <code
 class="verbatim">claude-sandbox build</code> to build the container
 image and <code class="verbatim">claude-sandbox run</code> to start a
 Claude Code session and work as usual.</p>
-<p>The <code class="verbatim">build</code> step installs the latest
-Claude Code into the image and configures its sandbox settings. The only
-use for Claude on the host-side is running <code
-class="verbatim">claude auth login</code> to populate the OAuth token.
-At runtime, <code class="verbatim">claude-sandbox run</code> reads it
-from the host keychain and passes it to the Claude Code in the
-container.</p>
-<h1 id="containing-the-data">Containing the data</h1>
-<p><code class="verbatim">claude-sandbox run</code> launches Claude Code
-inside an <a href="https://github.com/apple/containerization">Apple
-Container</a>. Each container runs in its own lightweight VM using
-Virtualization.framework on Apple Silicon, so isolation happens at the
-VM boundary rather than through kernel namespaces. The container mounts
-only the project directory I started it in. The agent has no path to any
-other file on my machine. I pick what to share by picking where to run
-the tool.</p>
+<p>The <code class="verbatim">build</code> step installs my development
+toolbox including the latest Claude Code into the image and configures
+its sandbox settings. The only use for Claude on the host-side is
+running <code class="verbatim">claude auth login</code> to populate the
+OAuth token. At runtime, <code
+class="verbatim">claude-sandbox run</code> reads it from the host
+keychain and passes it to the Claude Code in the container.</p>
+<h1 id="limit-the-data-the-agent-sees">Limit the data the agent
+sees</h1>
+<p><code class="verbatim">claude-sandbox</code> uses Apple's <a
+href="https://github.com/apple/containerization">Virtualization.framework</a>.
+Each container runs in its own lightweight VM and isolation happens at
+the VM boundary rather than through kernel namespaces. The container
+mounts only the project directory I started it in. The agent has no path
+to any other file on my machine. I pick what to share by picking where
+to run the tool.</p>
 <figure id="fig-sandbox-runtime">
 <svg class="typst-doc" viewBox="0 0 465.371 122.282" width="465.371pt" height="122.282pt" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:h5="http://www.w3.org/1999/xhtml">
     <g>
@@ -840,7 +839,8 @@ the tool.</p>
 
 <figcaption>Figure 2: Isolation layers at runtime.</figcaption>
 </figure>
-<h1 id="containing-the-code">Containing the code</h1>
+<h1 id="limit-the-code-the-agent-runs">Limit the code the agent
+runs</h1>
 <p>Inside the container, <code class="verbatim">claude-sandbox</code>
 configures Claude Code's <a
 href="https://code.claude.com/docs/en/sandboxing">Bash sandbox</a>. With
@@ -853,7 +853,8 @@ Bash commands to the mounted project directory and blocks network access
 to domains not on the allowlist. Every Bash command and its child
 processes inherit these restrictions, so if the agent goes off track,
 the damage stays contained.</p>
-<h1 id="containing-the-network">Containing the network</h1>
+<h1 id="limit-the-remote-endpoints-the-agent-talks-to">Limit the remote
+endpoints the agent talks to</h1>
 <p>All network traffic routes through local proxies. Anthropic's <a
 href="https://www.anthropic.com/engineering/claude-code-sandboxing">engineering
 post</a> describes the design: HTTP, HTTPS, and SOCKS traffic go through
@@ -861,7 +862,15 @@ proxy servers on localhost. DNS resolution and direct TCP connections to
 external hosts are blocked. When the agent tries to reach a domain not
 on the allowlist, the request goes to Claude Code's permission system
 and I see a prompt.</p>
-<h1 id="the-workflow">The workflow</h1>
+<div class="aside">
+<p><strong>Note</strong>: The VM isolates my host but the mounted
+project directory is fully accessible. Remember that Claude Code <a
+href="https://code.claude.com/docs/en/sandboxing#what-sandboxing-does-not-cover">only</a>
+sandboxes the Bash tool. Other tools like <code
+class="verbatim">Write</code> and MCP tools are not sandboxed and go
+through Claude Code's regular permission system.</p>
+</div>
+<h1 id="getting-things-done">Getting things done</h1>
 <p>While the agent works in the sandbox, the project directory is a bind
 mount, so changes appear on my host filesystem in real time. I keep my
 own editor and git workflow. When the session ends, the container goes
@@ -869,7 +878,7 @@ away, but the work remains in my git workspace to review and
 publish.</p>
 <p>With this workflow, most permission prompts disappear. I still see
 some when the agent wants to do things like reach out to a new domain. I
-don't mind those because their the agent is typically doing things I do
+don't mind those because in those cases the agent is doing things I do
 want to review. At least until I am cool enough for <code
 class="verbatim">--dangerously-skip-permissions</code>.</p>
 <footer>© 2026 Aldrin D’Souza. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</footer>

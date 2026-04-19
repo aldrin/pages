@@ -1,4 +1,5 @@
 #+date: 2026-03-29
+#+description: A personal publishing pipeline using Emacs Org-mode, pandoc, Typst, and IBM Plex fonts to produce PDF and HTML documents.
 
 * My Writing System
 

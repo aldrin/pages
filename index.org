@@ -1,6 +1,7 @@
 #+title: Aldrin’s Pages
 #+author:
 #+date:
+#+description: Writing about software, security, literature, music, and other topics.
 #+macro: date @@html:<span class="page-date">$1</span>@@
 
 Hello, I'm [[https://github.com/aldrin][Aldrin]]. Here, I write about software, security, literature, music, and other topics I

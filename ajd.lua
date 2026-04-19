@@ -162,6 +162,23 @@ local conversion = {
           doc.meta.date = pandoc.MetaInlines{pandoc.RawInline("html", link)}
         end
       end
+      local title = pandoc.utils.stringify(doc.meta.title or pandoc.MetaInlines{})
+      local desc = pandoc.utils.stringify(doc.meta.description or pandoc.MetaInlines{})
+      local slug = (PANDOC_STATE.input_files[1] or ""):match("([^/]+)%.org$") or ""
+      local url = "https://aldrin.co/" .. slug .. ".html"
+      local og = '<meta property="og:type" content="article" />\n'
+        .. '<meta property="og:url" content="' .. url .. '" />\n'
+      if title ~= "" then
+        og = og .. '<meta property="og:title" content="' .. title .. '" />\n'
+      end
+      if desc ~= "" then
+        og = og .. '<meta property="og:description" content="' .. desc .. '" />\n'
+      end
+      if not doc.meta["header-includes"] then
+        doc.meta["header-includes"] = pandoc.MetaBlocks{}
+      end
+      doc.meta["header-includes"]:insert(pandoc.RawBlock("html", og))
+
       doc.meta["include-after"] = pandoc.MetaBlocks{
         pandoc.RawBlock("html", '<footer>\u{a9} 2026 Aldrin D\u{2019}Souza. Licensed under <a href="https://creativecommons.org/licenses/by/4.0/">CC BY 4.0</a>.</footer>'),
         pandoc.RawBlock("html", '<script data-goatcounter="https://a1drin.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>')

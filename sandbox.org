@@ -1,4 +1,5 @@
 #+date: 2026-04-05
+#+description: Using Apple Containers and Claude Code's sandbox to isolate AI agents from sensitive data, arbitrary code execution, and unrestricted network access.
 
 * My Claude Code Sandbox
 

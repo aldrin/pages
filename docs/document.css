@@ -1,3 +1,20 @@
+/* -- Theme tokens --------------------------------------------------------- */
+
+:root {
+  --bg:          #fafafa;  /* paper */
+  --page-bg:     #efeff1;  /* page surround behind the paper */
+  --text:        #1f2937;  /* charcoal */
+  --text-soft:   #6b7280;
+  --text-faint:  #9ca3af;
+  --rule:        #e5e7eb;
+  --code-bg:     #eef0f3;
+
+  --accent:      #0e7490;  /* deep cyan -- primary */
+  --accent-soft: #5fa3b6;  /* lighter cyan for rules/borders */
+  --accent-tint: #d6ecf2;  /* very light wash */
+  --accent-2:    #1f2937;  /* charcoal -- mono gradient tail */
+}
+
 /* -- Fonts (IBM Plex, SIL OFL) -------------------------------------------- */
 
 @font-face {
@@ -49,19 +66,39 @@
 
 html {
   scroll-behavior: smooth;
+  background: var(--page-bg);
 }
 
 body {
   font-family: "IBM Plex Serif", serif;
   font-size: 16px;
   line-height: 1.65;
-  color: #333;
-  background: #faf9f7;
+  color: var(--text);
+  background: var(--bg);
   max-width: 38em;
-  margin: 0 auto;
-  padding: 3em 1.5em 5em;
+  margin: 2.5em auto 3em;
+  padding: 3em 2em 4em;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+  box-shadow:
+    0 1px 2px rgba(0, 0, 0, 0.03),
+    0 8px 28px rgba(0, 0, 0, 0.035);
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "kern", "liga", "calt";
+  font-variant-numeric: oldstyle-nums proportional-nums;
+  hanging-punctuation: first last;
+}
+
+/* Tabular, lining numerals in code/tables -- prose uses oldstyle. */
+code, pre, table {
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+::selection {
+  background: var(--accent-tint);
+  color: var(--text);
 }
 
 /* -- Home link ------------------------------------------------------------ */
@@ -73,12 +110,17 @@ nav.home {
 }
 
 nav.home a {
-  color: #888;
+  color: var(--text-soft);
   text-decoration: none;
 }
 
+nav.home a::before {
+  content: "← ";
+  color: var(--accent);
+}
+
 nav.home a:hover {
-  color: #4682B4;
+  color: var(--accent);
 }
 
 /* -- Title block ---------------------------------------------------------- */
@@ -92,30 +134,45 @@ header#title-block-header h1.title {
   font-size: 26px;
   font-weight: 600;
   line-height: 1.2;
-  color: #222;
-  margin: 0 0 0.4em;
+  color: #0f1420;
+  margin: 0 0 0.5em;
+  position: relative;
+}
+
+header#title-block-header h1.title::after {
+  content: "";
+  display: block;
+  width: 2.2em;
+  height: 3px;
+  margin-top: 0.45em;
+  border-radius: 1.5px;
+  background: linear-gradient(90deg,
+    var(--accent) 0%,
+    var(--accent) 55%,
+    var(--accent-2) 100%);
 }
 
 header#title-block-header .author,
 header#title-block-header .date {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;
-  color: #888;
+  color: var(--text-soft);
   display: inline;
   margin: 0;
 }
 
 header#title-block-header .author::after {
   content: " \00b7 ";
+  color: var(--accent);
 }
 
 header#title-block-header .date a {
-  color: #888;
+  color: var(--text-soft);
   text-decoration: none;
 }
 
 header#title-block-header .date a:hover {
-  color: #4682B4;
+  color: var(--accent);
 }
 
 header#title-block-header .author:empty,
@@ -127,7 +184,7 @@ header#title-block-header .date:empty {
 
 h1, h2, h3, h4 {
   font-family: "IBM Plex Sans", sans-serif;
-  color: #222;
+  color: #0f1420;
 }
 
 h1 {
@@ -173,13 +230,35 @@ p {
 /* -- Links ---------------------------------------------------------------- */
 
 a {
-  color: #4682B4;
+  color: var(--accent);
   text-decoration: none;
-  transition: color 0.15s;
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-position: 0 1.05em;
+  background-repeat: no-repeat;
+  background-size: 0% 1.5px;
+  transition: background-size 0.18s ease, color 0.15s;
 }
 
 a:hover {
-  text-decoration: underline;
+  background-size: 100% 1.5px;
+  text-decoration: none;
+}
+
+/* Plain links (nav, title meta, footer) keep their own muted color
+   but borrow the same animated underline when hovered. */
+nav.home a,
+header#title-block-header .date a,
+footer a {
+  background-image: linear-gradient(var(--accent), var(--accent));
+  background-position: 0 1.05em;
+  background-repeat: no-repeat;
+  background-size: 0% 1.5px;
+}
+
+nav.home a:hover,
+header#title-block-header .date a:hover,
+footer a:hover {
+  background-size: 100% 1.5px;
 }
 
 /* -- Block quotes --------------------------------------------------------- */
@@ -187,8 +266,8 @@ a:hover {
 blockquote {
   margin: 1.2em 0;
   padding: 0.5em 1em;
-  border-left: 2.5px solid #89add6;
-  color: #555;
+  border-left: 2.5px solid var(--accent-soft);
+  color: var(--text-soft);
   font-style: italic;
 }
 
@@ -211,7 +290,8 @@ pre {
   font-family: "IBM Plex Mono", monospace;
   font-size: 13px;
   line-height: 1.5;
-  background: #f0f0f0;
+  background: var(--code-bg);
+  border-left: 2px solid var(--accent-soft);
   border-radius: 2px;
   padding: 0.6em 0.8em;
   margin: 1.2em 0;
@@ -227,7 +307,7 @@ div.sourceCode pre {
 }
 
 p > code, li > code, td > code {
-  background: #f0f0f0;
+  background: var(--code-bg);
   padding: 0.1em 0.3em;
   border-radius: 2px;
 }
@@ -318,15 +398,25 @@ li {
   margin-bottom: 0.3em;
 }
 
+ul > li::marker {
+  color: var(--accent);
+}
+
+ol > li::marker {
+  color: var(--accent);
+  font-family: "IBM Plex Sans", sans-serif;
+  font-weight: 500;
+}
+
 /* -- Custom blocks -------------------------------------------------------- */
 
 div.aside {
-  background: #f0f0f0;
+  background: var(--code-bg);
   border-radius: 2px;
   padding: 0.8em 1em;
   margin: 1.2em 0;
   font-size: 15px;
-  color: #555;
+  color: var(--text-soft);
 }
 div.aside > :last-child { margin-bottom: 0; }
 
@@ -347,32 +437,32 @@ div.callout .callout-label {
 }
 
 div.callout.note {
-  border-left: 2.5px solid #4682B4;
-  background: #f2f6fb;
+  border-left: 2.5px solid var(--accent);
+  background: var(--accent-tint);
 }
-div.callout.note .callout-label { color: #4682B4; }
+div.callout.note .callout-label { color: var(--accent); }
 
 div.callout.tip {
   border-left: 2.5px solid #2d8a4e;
-  background: #f0f8f3;
+  background: #eaf3ed;
 }
 div.callout.tip .callout-label { color: #2d8a4e; }
 
 div.callout.warning {
-  border-left: 2.5px solid #d4942a;
-  background: #fdf6ec;
+  border-left: 2.5px solid #cf7028;
+  background: #fbeede;
 }
-div.callout.warning .callout-label { color: #d4942a; }
+div.callout.warning .callout-label { color: #cf7028; }
 
 div.callout.important {
-  border-left: 2.5px solid #c44040;
-  background: #fdf0f0;
+  border-left: 2.5px solid #8c2a3a;
+  background: #f3e3e6;
 }
-div.callout.important .callout-label { color: #c44040; }
+div.callout.important .callout-label { color: #8c2a3a; }
 
 div.key {
-  background: #f0f5fa;
-  border: 1px solid #b8cfe0;
+  background: var(--accent-tint);
+  border: 1px solid var(--accent-soft);
   border-radius: 2px;
   padding: 0.8em 1em;
   margin: 1.2em 0;
@@ -395,8 +485,14 @@ div.twocol > div.col {
 .page-date {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;
-  color: #aaa;
+  color: var(--text-faint);
   margin-left: 0.3em;
+}
+
+.page-date::before {
+  content: "· ";
+  color: var(--accent);
+  margin-right: 0.1em;
 }
 
 /* -- Footer --------------------------------------------------------------- */
@@ -404,20 +500,36 @@ div.twocol > div.col {
 footer {
   font-family: "IBM Plex Sans", sans-serif;
   font-size: 13px;
-  color: #aaa;
+  color: var(--text-faint);
   text-align: center;
   margin-top: 4em;
   padding-top: 1em;
-  border-top: 1px solid #e0e0e0;
+  border-top: 1px solid var(--rule);
+  position: relative;
+}
+
+footer::before {
+  content: "";
+  position: absolute;
+  top: -1px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 2.2em;
+  height: 3px;
+  border-radius: 1.5px;
+  background: linear-gradient(90deg,
+    var(--accent) 0%,
+    var(--accent) 55%,
+    var(--accent-2) 100%);
 }
 
 footer a {
-  color: #aaa;
+  color: var(--text-faint);
   text-decoration: none;
 }
 
 footer a:hover {
-  color: #4682B4;
+  color: var(--accent);
 }
 
 /* -- Responsive ----------------------------------------------------------- */
@@ -426,6 +538,10 @@ footer a:hover {
   body {
     padding: 1.5em 1em 3em;
     font-size: 15px;
+    margin: 0 auto;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   div.twocol {
@@ -436,114 +552,46 @@ footer a:hover {
 /* -- Dark mode ------------------------------------------------------------ */
 
 @media (prefers-color-scheme: dark) {
-  body {
-    color: #d4d4d4;
-    background: #1a1a1a;
+  :root {
+    --bg:          #14171c;
+    --page-bg:     #0a0c10;
+    --text:        #e5e7eb;
+    --text-soft:   #9ca3af;
+    --text-faint:  #5d6470;
+    --rule:        #262a33;
+    --code-bg:     #1d2129;
+
+    --accent:      #5fb8d4;  /* lighter cyan for dark bg */
+    --accent-soft: #3a7c93;
+    --accent-tint: #142531;
+    --accent-2:    #e5e7eb;  /* light gray for mono gradient tail */
   }
 
   h1, h2, h3, h4,
   header#title-block-header h1.title {
-    color: #e0e0e0;
+    color: #eaedf3;
   }
-
-  nav.home a,
-  header#title-block-header .author,
-  header#title-block-header .date,
-  header#title-block-header .date a {
-    color: #888;
-  }
-
-  a {
-    color: #7aadcf;
-  }
-
-  nav.home a:hover,
-  header#title-block-header .date a:hover,
-  footer a:hover {
-    color: #7aadcf;
-  }
-
-  blockquote {
-    border-left-color: #5a8aad;
-    color: #aaa;
-  }
-
-  pre,
-  p > code, li > code, td > code,
-  div.aside {
-    background: #2a2a2a;
-  }
-
-  div.aside {
-    color: #aaa;
-  }
-
-  div.callout.note {
-    border-left-color: #5a8aad;
-    background: #1c2630;
-  }
-  div.callout.note .callout-label { color: #7aadcf; }
 
   div.callout.tip {
-    border-left-color: #3a9a5e;
-    background: #1c2a20;
+    border-left-color: #4db870;
+    background: #1c2a22;
   }
   div.callout.tip .callout-label { color: #4db870; }
 
   div.callout.warning {
-    border-left-color: #c4943a;
-    background: #2a2418;
+    border-left-color: #d6843a;
+    background: #2a2218;
   }
-  div.callout.warning .callout-label { color: #d4a44a; }
+  div.callout.warning .callout-label { color: #d6843a; }
 
   div.callout.important {
-    border-left-color: #c45050;
-    background: #2a1c1c;
+    border-left-color: #c47a86;
+    background: #2a1c20;
   }
-  div.callout.important .callout-label { color: #d46060; }
-
-  div.key {
-    background: #1c2430;
-    border-color: #3a5a70;
-  }
-
-  table {
-    color: #d4d4d4;
-  }
-
-  thead {
-    border-bottom-color: #555;
-  }
-
-  tbody tr:last-child {
-    border-bottom-color: #444;
-  }
-
-  caption,
-  figcaption {
-    color: #888;
-  }
-
-  section.footnotes {
-    border-top-color: #444;
-    color: #aaa;
-  }
-
-  footer {
-    border-top-color: #333;
-    color: #666;
-  }
-
-  footer a {
-    color: #666;
-  }
-
-  .page-date {
-    color: #666;
-  }
+  div.callout.important .callout-label { color: #c47a86; }
 
   figure svg {
-    background: #faf9f7;
+    background: #f5f6f8;
     border-radius: 4px;
     padding: 0.5em;
   }
@@ -552,11 +600,19 @@ footer a:hover {
 /* -- Print ---------------------------------------------------------------- */
 
 @media print {
+  html {
+    background: white;
+  }
+
   body {
     background: white;
     color: black;
     padding: 0;
+    margin: 0;
     max-width: none;
+    border: none;
+    border-radius: 0;
+    box-shadow: none;
   }
 
   nav.home,
